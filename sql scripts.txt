@@ -1,0 +1,489 @@
+1. On-Prems : Tables creation scripts
+2. On-Prems : Insert Data into tables scripts
+3. On-Prems : Incremental load 1 - insert scripts for all tables.
+4. On-Prems : Incremental load 2 - insert scripts for all tables.
+5. Azure Cloud : SQL Server Scripts
+
+***************************************************************************
+------------1. On-Prems : Tables creation scripts--------------------------
+***************************************************************************
+-- Customers Table
+CREATE TABLE Customers (
+    CustomerID INT PRIMARY KEY,
+    FirstName VARCHAR(50),
+    LastName VARCHAR(50),
+    Email VARCHAR(100),
+    Phone VARCHAR(20),
+    CreatedDate DATETIME DEFAULT GETDATE(),
+    ModifiedDate DATETIME DEFAULT GETDATE()
+);
+
+-- Products Table
+CREATE TABLE Products (
+    ProductID INT PRIMARY KEY,
+    ProductName VARCHAR(100),
+    Price DECIMAL(10, 2),
+    Category VARCHAR(50),
+    CreatedDate DATETIME DEFAULT GETDATE(),
+    ModifiedDate DATETIME DEFAULT GETDATE()
+);
+
+-- Orders Table
+CREATE TABLE Orders (
+    OrderID INT PRIMARY KEY,
+    CustomerID INT,
+    OrderDate DATETIME,
+    OrderStatus VARCHAR(20),
+    CreatedDate DATETIME DEFAULT GETDATE(),
+    ModifiedDate DATETIME DEFAULT GETDATE()
+);
+
+-- OrderItems Table
+CREATE TABLE OrderItems (
+    OrderItemID INT PRIMARY KEY,
+    OrderID INT,
+    ProductID INT,
+    Quantity INT,
+    TotalPrice DECIMAL(10, 2),
+    CreatedDate DATETIME DEFAULT GETDATE(),
+    ModifiedDate DATETIME DEFAULT GETDATE()
+);
+
+-- Inventory Table
+CREATE TABLE Inventory (
+    ProductID INT PRIMARY KEY,
+    StockQuantity INT,
+    CreatedDate DATETIME DEFAULT GETDATE(),
+    ModifiedDate DATETIME DEFAULT GETDATE()
+);
+
+-- Payments Table
+CREATE TABLE Payments (
+    PaymentID INT PRIMARY KEY,
+    OrderID INT,
+    PaymentAmount DECIMAL(10, 2),
+    PaymentDate DATETIME,
+    CreatedDate DATETIME DEFAULT GETDATE(),
+    ModifiedDate DATETIME DEFAULT GETDATE()
+);
+
+-- Reviews Table
+CREATE TABLE Reviews (
+    ReviewID INT PRIMARY KEY,
+    ProductID INT,
+    CustomerID INT,
+    Rating INT,
+    Comment TEXT,
+    CreatedDate DATETIME DEFAULT GETDATE(),
+    ModifiedDate DATETIME DEFAULT GETDATE()
+);
+
+-- Promotions Table
+CREATE TABLE Promotions (
+    PromotionID INT PRIMARY KEY,
+    PromotionName VARCHAR(50),
+    Discount DECIMAL(5, 2),
+    StartDate DATETIME,
+    EndDate DATETIME,
+    CreatedDate DATETIME DEFAULT GETDATE(),
+    ModifiedDate DATETIME DEFAULT GETDATE()
+);
+
+-- ShippingDetails Table
+CREATE TABLE ShippingDetails (
+    ShippingID INT PRIMARY KEY,
+    OrderID INT,
+    ShippingMethod VARCHAR(50),
+    TrackingNumber VARCHAR(20),
+    ShipDate DATETIME,
+    CreatedDate DATETIME DEFAULT GETDATE(),
+    ModifiedDate DATETIME DEFAULT GETDATE()
+);
+
+-- Returns Table
+CREATE TABLE Returns (
+    ReturnID INT PRIMARY KEY,
+    OrderID INT,
+    ProductID INT,
+    ReturnReason VARCHAR(100),
+    ReturnDate DATETIME,
+    CreatedDate DATETIME DEFAULT GETDATE(),
+    ModifiedDate DATETIME DEFAULT GETDATE()
+);
+
+***************************************************************************
+------------2. On-Prems : Insert Data into tables scripts------------------
+***************************************************************************
+
+-- Customers Table
+INSERT INTO Customers (CustomerID, FirstName, LastName, Email, Phone)
+VALUES 
+(1, 'Rahul', 'Sharma', 'rahul.sharma@example.com', '123-456-7890'),
+(2, 'Priya', 'Patel', 'priya.patel@example.com', '987-654-3210'),
+(3, 'Arun', 'Gupta', 'arun.g@example.com', '555-555-5555'),
+(4, 'Sneha', 'Singh', 'sneha.s@example.com', '444-444-4444'),
+(5, 'Anjali', 'Shah', 'anjali.sh@example.com', '777-777-7777');
+
+-- Products Table
+INSERT INTO Products (ProductID, ProductName, Price, Category)
+VALUES 
+(1, 'Laptop', 1200.00, 'Electronics'),
+(2, 'Smartphone', 800.00, 'Electronics'),
+(3, 'Headphones', 100.00, 'Electronics'),
+(4, 'T-Shirt', 20.00, 'Clothing'),
+(5, 'Jeans', 50.00, 'Clothing');
+
+-- Orders Table
+INSERT INTO Orders (OrderID, CustomerID, OrderDate, OrderStatus)
+VALUES 
+(1, 1, '2024-03-25 10:00:00', 'Pending'),
+(2, 2, '2024-03-24 09:30:00', 'Shipped'),
+(3, 3, '2024-03-23 11:45:00', 'Delivered'),
+(4, 4, '2024-03-22 15:20:00', 'Processing'),
+(5, 5, '2024-03-21 14:15:00', 'Cancelled');
+
+-- OrderItems Table
+INSERT INTO OrderItems (OrderItemID, OrderID, ProductID, Quantity, TotalPrice)
+VALUES 
+(1, 1, 1, 2, 2400.00),
+(2, 2, 3, 1, 100.00),
+(3, 3, 2, 1, 800.00),
+(4, 4, 4, 3, 60.00),
+(5, 5, 5, 2, 100.00);
+
+-- Inventory Table
+INSERT INTO Inventory (ProductID, StockQuantity)
+VALUES 
+(1, 50),
+(2, 100),
+(3, 75),
+(4, 200),
+(5, 150);
+
+-- Payments Table
+INSERT INTO Payments (PaymentID, OrderID, PaymentAmount, PaymentDate)
+VALUES 
+(1, 1, 2400.00, '2024-03-25 10:05:00'),
+(2, 2, 100.00, '2024-03-24 09:35:00'),
+(3, 3, 800.00, '2024-03-23 11:50:00'),
+(4, 4, 60.00, '2024-03-22 15:25:00'),
+(5, 5, 100.00, '2024-03-21 14:20:00');
+
+-- Reviews Table
+INSERT INTO Reviews (ReviewID, ProductID, CustomerID, Rating, Comment)
+VALUES 
+(1, 1, 2, 4, 'Great laptop, fast delivery.'),
+(2, 2, 1, 5, 'Excellent smartphone, highly recommend!'),
+(3, 3, 3, 3, 'Decent headphones, could be better.'),
+(4, 4, 4, 4, 'Good quality t-shirt, fits well.'),
+(5, 5, 5, 5, 'Love these jeans, perfect fit and comfortable.');
+
+-- Promotions Table
+INSERT INTO Promotions (PromotionID, PromotionName, Discount, StartDate, EndDate)
+VALUES 
+(1, 'New Year Sale', 10.00, '2024-01-01', '2024-01-07'),
+(2, 'Summer Clearance', 20.00, '2024-06-01', '2024-06-30'),
+(3, 'Diwali Special', 15.00, '2024-10-15', '2024-10-30'),
+(4, 'Black Friday', 25.00, '2024-11-25', '2024-11-26'),
+(5, 'Christmas Sale', 30.00, '2024-12-20', '2024-12-25');
+
+-- ShippingDetails Table
+INSERT INTO ShippingDetails (ShippingID, OrderID, ShippingMethod, TrackingNumber, ShipDate)
+VALUES 
+(1, 1, 'Express', 'TRK123456789', '2024-03-25 10:10:00'),
+(2, 2, 'Standard', 'TRK987654321', '2024-03-24 09:40:00'),
+(3, 3, 'Express', 'TRK555555555', '2024-03-23 11:55:00'),
+(4, 4, 'Standard', 'TRK444444444', '2024-03-22 15:30:00'),
+(5, 5, 'Express', 'TRK777777777', '2024-03-21 14:25:00');
+
+-- Returns Table
+INSERT INTO Returns (ReturnID, OrderID, ProductID, ReturnReason, ReturnDate)
+VALUES 
+(1, 2, 2, 'Defective product', '2024-03-26 11:00:00'),
+(2, 3, 3, 'Wrong item received', '2024-03-25 12:30:00'),
+(3, 4, 4, 'Size too small', '2024-03-24 13:45:00'),
+(4, 5, 5, 'Changed mind', '2024-03-23 14:20:00'),
+(5, 1, 1, 'Not as described', '2024-03-22 15:00:00');
+
+
+***************************************************************************
+---3. On-Prems : Incremental load 1 - insert scripts for all tables.-------
+***************************************************************************
+
+incremetnal data 1:
+-- Customers Table
+INSERT INTO Customers (CustomerID, FirstName, LastName, Email, Phone)
+VALUES 
+(6, 'Amit', 'Verma', 'amit.verma@example.com', '111-222-3333'),
+(7, 'Pooja', 'Rao', 'pooja.rao@example.com', '999-888-7777'),
+(8, 'Suresh', 'Menon', 'suresh.m@example.com', '666-555-4444'),
+(9, 'Neha', 'Iyer', 'neha.i@example.com', '333-222-1111'),
+(10, 'Rajesh', 'Kumar', 'rajesh.k@example.com', '777-888-9999');
+
+-- Products Table
+INSERT INTO Products (ProductID, ProductName, Price, Category)
+VALUES 
+(6, 'Tablet', 500.00, 'Electronics'),
+(7, 'Camera', 700.00, 'Electronics'),
+(8, 'Watch', 150.00, 'Electronics'),
+(9, 'Dress Shirt', 30.00, 'Clothing'),
+(10, 'Skirt', 40.00, 'Clothing');
+
+-- Orders Table
+INSERT INTO Orders (OrderID, CustomerID, OrderDate, OrderStatus)
+VALUES 
+(6, 6, '2024-03-20 08:00:00', 'Delivered'),
+(7, 7, '2024-03-19 09:30:00', 'Shipped'),
+(8, 8, '2024-03-18 11:45:00', 'Pending'),
+(9, 9, '2024-03-17 14:20:00', 'Cancelled'),
+(10, 10, '2024-03-16 16:15:00', 'Processing');
+
+-- OrderItems Table
+INSERT INTO OrderItems (OrderItemID, OrderID, ProductID, Quantity, TotalPrice)
+VALUES 
+(6, 6, 6, 1, 500.00),
+(7, 7, 7, 1, 700.00),
+(8, 8, 8, 2, 300.00),
+(9, 9, 9, 3, 90.00),
+(10, 10, 10, 1, 40.00);
+
+-- Inventory Table
+INSERT INTO Inventory (ProductID, StockQuantity)
+VALUES 
+(6, 80),
+(7, 100),
+(8, 150),
+(9, 250),
+(10, 200);
+
+-- Payments Table
+INSERT INTO Payments (PaymentID, OrderID, PaymentAmount, PaymentDate)
+VALUES 
+(6, 6, 500.00, '2024-03-20 08:05:00'),
+(7, 7, 700.00, '2024-03-19 09:35:00'),
+(8, 8, 150.00, '2024-03-18 11:50:00'),
+(9, 9, 90.00, '2024-03-17 14:25:00'),
+(10, 10, 40.00, '2024-03-16 16:20:00');
+
+-- Reviews Table
+INSERT INTO Reviews (ReviewID, ProductID, CustomerID, Rating, Comment)
+VALUES 
+(6, 6, 1, 4, 'Good tablet, fast shipping.'),
+(7, 7, 2, 5, 'Excellent camera, great features!'),
+(8, 8, 3, 3, 'Average watch, could be better.'),
+(9, 9, 4, 4, 'Nice dress shirt, good quality fabric.'),
+(10, 10, 5, 5, 'Love this skirt, perfect fit and style.');
+
+-- Promotions Table
+INSERT INTO Promotions (PromotionID, PromotionName, Discount, StartDate, EndDate)
+VALUES 
+(6, 'Spring Sale', 15.00, '2024-03-01', '2024-03-15'),
+(7, 'Eid Special', 20.00, '2024-04-15', '2024-04-30'),
+(8, 'Summer Sale', 25.00, '2024-05-01', '2024-05-31'),
+(9, 'Back to School', 10.00, '2024-08-01', '2024-08-15'),
+(10, 'Halloween Deals', 30.00, '2024-10-01', '2024-10-31');
+
+-- ShippingDetails Table
+INSERT INTO ShippingDetails (ShippingID, OrderID, ShippingMethod, TrackingNumber, ShipDate)
+VALUES 
+(6, 6, 'Express', 'TRK111222333', '2024-03-20 08:10:00'),
+(7, 7, 'Standard', 'TRK999888777', '2024-03-19 09:40:00'),
+(8, 8, 'Express', 'TRK666555444', '2024-03-18 11:55:00'),
+(9, 9, 'Standard', 'TRK333222111', '2024-03-17 14:30:00'),
+(10, 10, 'Express', 'TRK777888999', '2024-03-16 16:25:00');
+
+-- Returns Table
+INSERT INTO Returns (ReturnID, OrderID, ProductID, ReturnReason, ReturnDate)
+VALUES 
+(6, 7, 7, 'Defective product', '2024-03-21 11:00:00'),
+(7, 8, 8, 'Wrong item received', '2024-03-20 12:30:00'),
+(8, 9, 9, 'Size too big', '2024-03-19 13:45:00'),
+(9, 10, 10, 'Changed mind', '2024-03-18 14:20:00'),
+(10, 6, 6, 'Not as described', '2024-03-17 15:00:00');
+
+
+***************************************************************************
+---4. On-Prems : Incremental load 2 - insert scripts for all tables.-------
+***************************************************************************
+
+-- Customers Table
+INSERT INTO Customers (CustomerID, FirstName, LastName, Email, Phone)
+VALUES 
+(11, 'Sunita', 'Chopra', 'sunita.c@example.com', '111-222-3333'),
+(12, 'Alok', 'Shah', 'alok.sh@example.com', '222-333-4444'),
+(13, 'Deepak', 'Mishra', 'deepak.m@example.com', '333-444-5555'),
+(14, 'Kavita', 'Nair', 'kavita.n@example.com', '444-555-6666'),
+(15, 'Vivek', 'Gupta', 'vivek.g@example.com', '555-666-7777');
+
+-- Products Table
+INSERT INTO Products (ProductID, ProductName, Price, Category)
+VALUES 
+(11, 'Smart Watch', 200.00, 'Electronics'),
+(12, 'Wireless Earbuds', 80.00, 'Electronics'),
+(13, 'Sunglasses', 50.00, 'Accessories'),
+(14, 'Sweater', 35.00, 'Clothing'),
+(15, 'Dress', 60.00, 'Clothing');
+
+-- Orders Table
+INSERT INTO Orders (OrderID, CustomerID, OrderDate, OrderStatus)
+VALUES 
+(11, 11, '2024-03-10 08:00:00', 'Delivered'),
+(12, 12, '2024-03-09 09:30:00', 'Shipped'),
+(13, 13, '2024-03-08 11:45:00', 'Pending'),
+(14, 14, '2024-03-07 14:20:00', 'Cancelled'),
+(15, 15, '2024-03-06 16:15:00', 'Processing');
+
+-- OrderItems Table
+INSERT INTO OrderItems (OrderItemID, OrderID, ProductID, Quantity, TotalPrice)
+VALUES 
+(11, 11, 11, 1, 200.00),
+(12, 12, 12, 1, 80.00),
+(13, 13, 13, 2, 100.00),
+(14, 14, 14, 3, 105.00),
+(15, 15, 15, 1, 60.00);
+
+-- Inventory Table
+INSERT INTO Inventory (ProductID, StockQuantity)
+VALUES 
+(11, 150),
+(12, 200),
+(13, 100),
+(14, 300),
+(15, 150);
+
+-- Payments Table
+INSERT INTO Payments (PaymentID, OrderID, PaymentAmount, PaymentDate)
+VALUES 
+(11, 11, 200.00, '2024-03-10 08:05:00'),
+(12, 12, 80.00, '2024-03-09 09:35:00'),
+(13, 13, 100.00, '2024-03-08 11:50:00'),
+(14, 14, 105.00, '2024-03-07 14:25:00'),
+(15, 15, 60.00, '2024-03-06 16:20:00');
+
+-- Reviews Table
+INSERT INTO Reviews (ReviewID, ProductID, CustomerID, Rating, Comment)
+VALUES 
+(11, 11, 11, 4, 'Nice smartwatch, good features.'),
+(12, 12, 12, 5, 'Excellent earbuds, great sound quality!'),
+(13, 13, 13, 3, 'Average sunglasses, could be sturdier.'),
+(14, 14, 14, 4, 'Comfortable sweater, good fit.'),
+(15, 15, 15, 5, 'Love this dress, elegant and stylish.');
+
+-- Promotions Table
+INSERT INTO Promotions (PromotionID, PromotionName, Discount, StartDate, EndDate)
+VALUES 
+(11, 'Valentine\'s Day Sale', 20.00, '2024-02-01', '2024-02-14'),
+(12, 'Mother\'s Day Special', 25.00, '2024-05-01', '2024-05-10'),
+(13, 'Father\'s Day Deals', 15.00, '2024-06-01', '2024-06-21'),
+(14, 'Independence Day Sale', 30.00, '2024-08-01', '2024-08-15'),
+(15, 'Labor Day Clearance', 40.00, '2024-09-01', '2024-09-07');
+
+-- ShippingDetails Table
+INSERT INTO ShippingDetails (ShippingID, OrderID, ShippingMethod, TrackingNumber, ShipDate)
+VALUES 
+(11, 11, 'Express', 'TRK111222333', '2024-03-10 08:10:00'),
+(12, 12, 'Standard', 'TRK222333444', '2024-03-09 09:40:00'),
+(13, 13, 'Express', 'TRK333444555', '2024-03-08 11:55:00'),
+(14, 14, 'Standard', 'TRK444555666', '2024-03-07 14:30:00'),
+(15, 15, 'Express', 'TRK555666777', '2024-03-06 16:25:00');
+
+-- Returns Table
+INSERT INTO Returns (ReturnID, OrderID, ProductID, ReturnReason, ReturnDate)
+VALUES 
+(11, 12, 12, 'Defective product', '2024-03-11 11:00:00'),
+(12, 13, 13, 'Wrong item received', '2024-03-10 12:30:00'),
+(13, 14, 14, 'Size too small', '2024-03-09 13:45:00'),
+(14, 15, 15, 'Changed mind', '2024-03-08 14:20:00'),
+(15, 11, 11, 'Not as described', '2024-03-07 15:00:00');
+
+
+***************************************************************************
+---5. Azure Cloud : SQL Server tables Scripts------------------------------
+***************************************************************************
+Azure SQL Server table creation :
+create table watermarktable
+(
+	id int,
+	tablename varchar(30),
+	watermarkDateTime datetime
+)
+
+
+insert into watermarktable values(1,'Orders',dateadd(day,-60,getdate()))
+insert into watermarktable values(2,'OrderItems',dateadd(day,-60,getdate()))
+insert into watermarktable values(3,'Inventory',dateadd(day,-60,getdate()))
+insert into watermarktable values(4,'Payments',dateadd(day,-60,getdate()))
+
+
+
+create table YearMonthlySales
+(
+	year int,
+	month int, 
+	TotalSales decimal(10,2)
+)
+
+create table TopProducts
+(	ProductID int,
+	TotalQuantity int
+)
+
+create table OrderAnalysis
+(
+	OrderID int,
+	TotalOrderAmount decimal(20,2),
+	TotalOrderQuantity int
+)
+
+create table SalesAnalysis
+(
+	ProductID int,
+	OrderYear int,
+	OrderMonth int,
+	TotalSalesAmount decimal(20,2),
+	TotalNumberOfOrders int
+)
+
+
+
+create table ADFLogs
+(
+	id int identity(1,1),
+	ADFName varchar(30),
+	PipelineName varchar(30),
+	RunID varchar(30),
+	StartTime datetime,
+	EndTime datetime,
+	ErrorMessage varchar(500)
+)
+
+
+***************************************************************************
+---6. Azure Cloud : SQL Server Stoprocedures scripts-----------------------
+***************************************************************************
+
+create procedure uspADFPipelineStart
+		@ADFName varchar(30),
+		@PipelineName varchar(30),
+		@RunID varchar(30),
+		@StartTime datetime
+AS
+BEGIN
+		INSERT INTO ADFLogs (ADFName, PipelineName,RunID, StartTime)
+					values  (@ADFName, @PipelineName, @RunID, @StartTime);
+
+		SELECT SCOPE_IDENTITY() ID			
+END
+
+create procedure uspADFPipelineEnd
+		@id int,
+		@EndTime datetime,
+		@ErrorMessage varchar(500)
+AS
+BEGIN
+		UPDATE 	ADFLogs
+		SET EndTime=@EndTime,
+			ErrorMessage=@ErrorMessage
+		WHERE id=@id
+END
+
