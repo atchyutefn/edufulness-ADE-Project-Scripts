@@ -454,7 +454,8 @@ create table ADFLogs
 	RunID varchar(30),
 	StartTime datetime,
 	EndTime datetime,
-	ErrorMessage varchar(500)
+	ErrorMessage varchar(500),
+	parentid int
 )
 
 
